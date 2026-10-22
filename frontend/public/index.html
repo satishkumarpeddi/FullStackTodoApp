@@ -226,6 +226,16 @@
         </section>
 
         <section class="card">
+            <h2>To Edit Todo</h2>
+
+            <div class="form-row">
+                <input id="edit-title" type="text" placeholder="Title">
+                <input id="edit-description" type="text" placeholder="Description">
+                <!-- <button class="primary" onclick="editTodo()">+ Edit Todo</button> -->
+            </div>
+        </section>
+
+        <section class="card">
             <h2>To Fetch Todo</h2>
             <button class="primary" onclick="getTodos()">↻ Get Todo</button>
         </section>
@@ -289,6 +299,7 @@
                 alert("Failed to add todo. Check your server.");
             }
         };
+        
 
         const getTodos = async () => {
             await fetchUtilMethod();
@@ -311,22 +322,30 @@
                 const h3Tag = document.createElement("h3");
                 const pTag = document.createElement("p");
                 const button = document.createElement("button");
+                const buttonEdit = document.createElement("button");
 
                 h3Tag.innerText = todo.title;
                 pTag.innerText = todo.description;
                 button.innerText = "Delete";
                 button.className = "delete";
+                buttonEdit.innerText = "Edit";
+                buttonEdit.className = "Edit";
 
                 info.appendChild(h3Tag);
                 info.appendChild(pTag);
 
                 divTag.appendChild(info);
                 divTag.appendChild(button);
+                divTag.appendChild(buttonEdit)
                 element.appendChild(divTag);
 
                 button.addEventListener("click", async () => {
                     await deleteTodo(todo.id);
                 });
+
+                buttonEdit.addEventListener("click",async ()=>{
+                    await editTodo(todo.id);
+                })
             });
         };
 
@@ -345,6 +364,40 @@
             } catch (err) {
                 console.error(err);
                 alert("Failed to delete todo.");
+            }
+        };
+
+         const editTodo = async (id) => {
+            const titleEditField = document.querySelector("#edit-title");
+            const descriptionEditField = document.querySelector("#edit-description")
+            
+            if(!titleEditField || !descriptionEditField){
+                alert("Please enter both title and description.");
+                return;
+            }
+            try {
+                const response = await fetch(
+                    "http://localhost:3000/todos/" + id,
+                    { method: "PUT",
+                      headers:{
+                        "Content-Type":" application/json"
+                      },
+                      body:JSON.stringify({
+                        title:titleEditField.value,
+                        description:descriptionEditField.value
+                      })
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error("Failed to update todo");
+                }
+                titleEditField.value='';
+                descriptionEditField.value=''
+                await getTodos();
+            } catch (err) {
+                console.error(err);
+                alert("Failed to update todo.");
             }
         };
     </script>
