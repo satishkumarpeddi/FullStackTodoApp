@@ -1,97 +1,352 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todo Application</title>
-</head>
-<body>
-    <h1>Todo List</h1>
-    <h3>To Add Todo</h3>
-    <div>
-        <input id="title" type="text" placeholder="title">
-        <input id="description" type="text" placeholder="description">
-        <button onclick="addTodo()">Add Todo</button>
-    </div>
-    <h3>To Fetch Todo</h3>
-    <div>
-        <button onclick="getTodos()">Get Todo</button>
-    </div>
-    <div id="list">
 
-    </div>
-</body>
-<script>
-    let todos = []
-    const fetchUtilMethod = async() =>{
-        const respone = await fetch("http://localhost:3000/todos",{
-            method:"GET"
-        });
-        const data = await respone.json();
-        todos = data;
-    }
-    const addTodo = async () => {
-        const titleField = document.querySelector("#title");
-        const descriptionField = document.querySelector("#description")
-
-        if(!titleField || !descriptionField){
-            alert("Required input fields are missing from the DOM.")
-            return;
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        try{
-                const response = await fetch("http://localhost:3000/todos",{
-                    method:"POST",
-                    headers:{
-                        "Content-Type":"application/json"
-                    },
-                    body:JSON.stringify({
-                        title:titleField.value,
-                        description:descriptionField.value
-                    })
-                })
-            if(response.ok){
-                alert("Adding successfully");
-                titleField.value='';
-                descriptionField.value=''
-            }else{
-                alert(`Server error: ${response.status}`)
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+                         "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #eaf2ff, #f5f3ff, #fff0e8);
+            color: #1d1d1f;
+            min-height: 100vh;
+            padding: 60px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 24px 70px rgba(31, 45, 75, 0.13);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 38px;
+        }
+
+        header h1 {
+            font-size: 42px;
+            font-weight: 750;
+            letter-spacing: -1.5px;
+        }
+
+        header p {
+            color: #86868b;
+            font-size: 16px;
+            margin-top: 8px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.75);
+            border: 1px solid #e5e5ea;
+            border-radius: 18px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.035);
+        }
+
+        .card h2 {
+            font-size: 22px;
+            letter-spacing: -0.5px;
+            margin-bottom: 18px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        input {
+            flex: 1;
+            min-width: 0;
+            padding: 14px 16px;
+            border: 1px solid #d2d2d7;
+            border-radius: 12px;
+            background: #fff;
+            color: #1d1d1f;
+            font-size: 15px;
+            outline: none;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus {
+            border-color: #0071e3;
+            box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.12);
+        }
+
+        button {
+            border: none;
+            border-radius: 12px;
+            padding: 13px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+        }
+
+        .primary {
+            background: #0071e3;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 113, 227, 0.18);
+        }
+
+        .primary:hover {
+            background: #0077ed;
+        }
+
+        .secondary {
+            background: #f2f2f7;
+            color: #0071e3;
+        }
+
+        .secondary:hover {
+            background: #e5e5ea;
+        }
+
+        .todo {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 18px;
+            margin-top: 12px;
+            border: 1px solid #e5e5ea;
+            border-radius: 14px;
+            background: #fff;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+
+        .todo:hover {
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.06);
+            transform: translateY(-1px);
+        }
+
+        .todo-info {
+            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+
+        .todo h3 {
+            font-size: 17px;
+            font-weight: 650;
+            margin-bottom: 6px;
+        }
+
+        .todo p {
+            font-size: 14px;
+            color: #86868b;
+            line-height: 1.5;
+        }
+
+        .delete {
+            flex-shrink: 0;
+            background: #fff0f0;
+            color: #ff3b30;
+            padding: 10px 14px;
+        }
+
+        .delete:hover {
+            background: #ffe0df;
+        }
+
+        .empty {
+            color: #86868b;
+            text-align: center;
+            padding: 24px 0 8px;
+            font-size: 15px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 24px 12px;
             }
-        }catch(err){
-            console.error("Network error:"+err);
-            alert("Failed to connect to the server.")
+
+            .container {
+                padding: 22px 16px;
+                border-radius: 20px;
+            }
+
+            header h1 {
+                font-size: 32px;
+            }
+
+            .form-row {
+                flex-direction: column;
+            }
+
+            .form-row button {
+                width: 100%;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .todo {
+                align-items: flex-start;
+                padding: 14px;
+            }
         }
-    }
-    const getTodos = () => {
-        const element = document.querySelector("#list");
-        for(let i=0;i<todos.length;i++){
-            const divTag = document.createElement("div");
-            const h4Tag = document.createElement("h4");
-            const span = document.createElement("span");
-            const button = document.createElement("button");
-            button.innerHTML="Delete"
-            h4Tag.innerText = todos[i].title;
-            span.innerText = todos[i].description;
-            divTag.appendChild(h4Tag);
-            divTag.appendChild(span);
-            divTag.appendChild(button)
-            divTag.setAttribute("id",todos[i].id);
-            element.appendChild(divTag)
-            button.addEventListener('click',async ()=>{
-                await deleteTodo(todos[i].id)
-            })
-        }
-    }
-    const deleteTodo = async (id) => {
-        const response = await fetch("http://localhost:3000/todos/"+id,{
-            method:"DELETE"
-        })
-        if(response.ok){
-            alert("Deleted Successfully");
-        }
-        document.querySelector("#list").remove()
-        
-        getTodos();
-    }
-    fetchUtilMethod();
-</script>
+    </style>
+</head>
+
+<body>
+    <main class="container">
+        <header>
+            <h1>Todo List</h1>
+            <p>Small tasks. Big progress.</p>
+        </header>
+
+        <section class="card">
+            <h2>To Add Todo</h2>
+
+            <div class="form-row">
+                <input id="title" type="text" placeholder="Title">
+                <input id="description" type="text" placeholder="Description">
+                <button class="primary" onclick="addTodo()">+ Add Todo</button>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>To Fetch Todo</h2>
+            <button class="primary" onclick="getTodos()">↻ Get Todo</button>
+        </section>
+
+        <section class="card">
+            <h2>Your Tasks</h2>
+            <div id="list">
+                <p class="empty">Click "Get Todo" to load your tasks.</p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        let todos = [];
+
+        const fetchUtilMethod = async () => {
+            try {
+                const response = await fetch("http://localhost:3000/todos");
+
+                if (!response.ok) {
+                    throw new Error("Failed to fetch todos");
+                }
+
+                todos = await response.json();
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        const addTodo = async () => {
+            const titleField = document.querySelector("#title");
+            const descriptionField = document.querySelector("#description");
+
+            if (!titleField.value.trim() || !descriptionField.value.trim()) {
+                alert("Please enter both title and description.");
+                return;
+            }
+
+            try {
+                const response = await fetch("http://localhost:3000/todos", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        title: titleField.value,
+                        description: descriptionField.value
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+
+                titleField.value = "";
+                descriptionField.value = "";
+
+                await getTodos();
+            } catch (err) {
+                console.error(err);
+                alert("Failed to add todo. Check your server.");
+            }
+        };
+
+        const getTodos = async () => {
+            await fetchUtilMethod();
+
+            const element = document.querySelector("#list");
+            element.innerHTML = "";
+
+            if (todos.length === 0) {
+                element.innerHTML = '<p class="empty">No tasks yet. Add your first todo!</p>';
+                return;
+            }
+
+            todos.forEach((todo) => {
+                const divTag = document.createElement("div");
+                divTag.className = "todo";
+
+                const info = document.createElement("div");
+                info.className = "todo-info";
+
+                const h3Tag = document.createElement("h3");
+                const pTag = document.createElement("p");
+                const button = document.createElement("button");
+
+                h3Tag.innerText = todo.title;
+                pTag.innerText = todo.description;
+                button.innerText = "Delete";
+                button.className = "delete";
+
+                info.appendChild(h3Tag);
+                info.appendChild(pTag);
+
+                divTag.appendChild(info);
+                divTag.appendChild(button);
+                element.appendChild(divTag);
+
+                button.addEventListener("click", async () => {
+                    await deleteTodo(todo.id);
+                });
+            });
+        };
+
+        const deleteTodo = async (id) => {
+            try {
+                const response = await fetch(
+                    "http://localhost:3000/todos/" + id,
+                    { method: "DELETE" }
+                );
+
+                if (!response.ok) {
+                    throw new Error("Failed to delete todo");
+                }
+
+                await getTodos();
+            } catch (err) {
+                console.error(err);
+                alert("Failed to delete todo.");
+            }
+        };
+    </script>
+</body>
 </html>
