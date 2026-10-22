@@ -1,15 +1,16 @@
-
 services:
-  backend:
-    build: ./backend
-    ports:
-      - "3000:3000"
-    restart: unless-stopped
+    backend: 
+        build: ./backend
+        port:
+          - "3000:3000"
+        restart: unless-stopped 
+    
+    frontend:
+        build: ./frontend
+        port:
+          - "8080:80"
+        volumns:
+          -./frontend/public:/usr/share/nginx/html:ro
+        restart: unless-stopped
 
-  frontend:
-    image: nginx:alpine
-    ports:
-      - "8080:80"
-    volumes:
-      - ./frontend/public:/usr/share/nginx/html:ro
-    restart: unless-stopped
+
