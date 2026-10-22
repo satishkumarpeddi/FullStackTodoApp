@@ -13,7 +13,6 @@ const removeTodo = (todos,idx) => {
         if(i!=idx)
             newTodoList.push(todos[i])
     }
-    console.log(newTodoList)
     return newTodoList;
 }
 
