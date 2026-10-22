@@ -9,6 +9,11 @@
     
 </body>
 <script>
-    
+    const fetchUtilMethod = async() =>{
+        const respone = await fetch("http://localhost:3000/todos",{method:"GET"});
+        const data = await respone.json();
+        console.log(respone)
+    }
+    fetchUtilMethod()
 </script>
 </html>
