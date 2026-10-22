@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo Application</title>
+</head>
+<body>
+    
+</body>
+<script>
+    const fetchUtilMethod = async() =>{
+        const respone = await fetch("http://localhost:3000/todos",{
+            method:"POST",
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify({
+                title:"learning kali linux",
+                description:"Networking and Web security"
+            })
+        });
+        const data = await respone.json();
+        console.log(data)
+    }
+    fetchUtilMethod()
+</script>
+</html>
