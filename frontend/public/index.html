@@ -6,23 +6,42 @@
     <title>Todo Application</title>
 </head>
 <body>
-    
+    <h1>Todo List</h1>
+    <h3>To Add Todo</h3>
+    <div>
+        <input type="text">
+        <button>Add Todo</button>
+    </div>
+    <h3>To Fetch Todo</h3>
+    <div>
+        <button onclick="getTodos()">Get Todo</button>
+    </div>
+    <div id="list">
+
+    </div>
 </body>
 <script>
+    let todos = []
     const fetchUtilMethod = async() =>{
         const respone = await fetch("http://localhost:3000/todos",{
-            method:"POST",
-            headers:{
-                'Content-Type':'application/json'
-            },
-            body:JSON.stringify({
-                title:"learning kali linux",
-                description:"Networking and Web security"
-            })
+            method:"GET"
         });
         const data = await respone.json();
-        console.log(data)
+        todos = data;
     }
-    fetchUtilMethod()
+    const getTodos = () => {
+        const element = document.querySelector("#list");
+        for(let i=0;i<todos.length;i++){
+            const divTag = document.createElement("div");
+            const h4Tag = document.createElement("h4");
+            const span = document.createElement("span");
+            h4Tag.innerText = todos[i].title;
+            span.innerText = todos[i].description;
+            divTag.appendChild(h4Tag);
+            divTag.appendChild(span);
+            element.appendChild(divTag)
+        }
+    }
+    fetchUtilMethod();
 </script>
 </html>
