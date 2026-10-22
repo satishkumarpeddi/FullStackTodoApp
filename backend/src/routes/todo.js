@@ -6,6 +6,17 @@ const fs = require('fs')
 const filePath = path.resolve(__dirname,'../data/todos.json')
 todo.use(express.json())
 
+const removeTodo = (todos,idx) => {
+    let newTodoList = [];
+    console.log(idx)
+    for(let i=0;i<todos.length;i++){
+        if(i!=idx)
+            newTodoList.push(todos[i])
+    }
+    console.log(newTodoList)
+    return newTodoList;
+}
+
 const findTodo = (todos,idx) => {
     for(let i=0;i<todos.length;i++){
         if(todos[i].id==idx)
@@ -104,4 +115,32 @@ todo.put('/todos/:id',validateTodoMiddleware,(req,res)=>{
     })
 })
 
+todo.delete('/todos/:id',(req,res)=>{
+    fs.readFile(filePath,"utf-8",(err,data)=>{
+        if(err){
+            return res.status(404).json({
+                message:"File not found"
+            })
+        }
+        let todos = JSON.parse(data);
+        if(!Array.isArray(todos)){
+            return res.status(409).json({
+                message:"Unprocessable data"
+            })
+        }
+        let idx = findTodo(todos,parseInt(req.params.id))
+        let newTodoList = removeTodo(todos,idx);
+        todos=newTodoList;
+        fs.writeFile(filePath,JSON.stringify(todos),(err,data)=>{
+            if(err){
+                return res.status(404).json({
+                    message:"File not found"
+                })
+            }
+            res.status(200).json({
+                message:"Deleted Successfully"
+            })
+        })
+    })
+})
 module.exports = todo
