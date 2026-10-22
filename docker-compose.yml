@@ -1,16 +1,15 @@
 services:
     backend:
       build: ./backend
-      port:
+      ports:
         - "3000:3000"
       restart: unless-stopped
     
     frontend:
       build: ./frontend
-      port:
+      ports:
         - "8080:80"
-      volumns:
+      volumes:
         - ./frontend/public:/usr/share/nginx/html:ro
       restart: unless-stopped
 
-      
