@@ -53,6 +53,8 @@
                 alert("Adding successfully");
                 titleField.value='';
                 descriptionField.value=''
+            }else{
+                alert(`Server error: ${response.status}`)
             }
         }catch(err){
             console.error("Network error:"+err);
@@ -61,17 +63,34 @@
     }
     const getTodos = () => {
         const element = document.querySelector("#list");
-        // element.remove()
         for(let i=0;i<todos.length;i++){
             const divTag = document.createElement("div");
             const h4Tag = document.createElement("h4");
             const span = document.createElement("span");
+            const button = document.createElement("button");
+            button.innerHTML="Delete"
             h4Tag.innerText = todos[i].title;
             span.innerText = todos[i].description;
             divTag.appendChild(h4Tag);
             divTag.appendChild(span);
+            divTag.appendChild(button)
+            divTag.setAttribute("id",todos[i].id);
             element.appendChild(divTag)
+            button.addEventListener('click',async ()=>{
+                await deleteTodo(todos[i].id)
+            })
         }
+    }
+    const deleteTodo = async (id) => {
+        const response = await fetch("http://localhost:3000/todos/"+id,{
+            method:"DELETE"
+        })
+        if(response.ok){
+            alert("Deleted Successfully");
+        }
+        document.querySelector("#list").remove()
+        
+        getTodos();
     }
     fetchUtilMethod();
 </script>
