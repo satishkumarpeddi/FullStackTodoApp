@@ -9,8 +9,9 @@
     <h1>Todo List</h1>
     <h3>To Add Todo</h3>
     <div>
-        <input type="text">
-        <button>Add Todo</button>
+        <input id="title" type="text" placeholder="title">
+        <input id="description" type="text" placeholder="description">
+        <button onclick="addTodo()">Add Todo</button>
     </div>
     <h3>To Fetch Todo</h3>
     <div>
@@ -29,8 +30,38 @@
         const data = await respone.json();
         todos = data;
     }
+    const addTodo = async () => {
+        const titleField = document.querySelector("#title");
+        const descriptionField = document.querySelector("#description")
+
+        if(!titleField || !descriptionField){
+            alert("Required input fields are missing from the DOM.")
+            return;
+        }
+        try{
+                const response = await fetch("http://localhost:3000/todos",{
+                    method:"POST",
+                    headers:{
+                        "Content-Type":"application/json"
+                    },
+                    body:JSON.stringify({
+                        title:titleField.value,
+                        description:descriptionField.value
+                    })
+                })
+            if(response.ok){
+                alert("Adding successfully");
+                titleField.value='';
+                descriptionField.value=''
+            }
+        }catch(err){
+            console.error("Network error:"+err);
+            alert("Failed to connect to the server.")
+        }
+    }
     const getTodos = () => {
         const element = document.querySelector("#list");
+        // element.remove()
         for(let i=0;i<todos.length;i++){
             const divTag = document.createElement("div");
             const h4Tag = document.createElement("h4");
