@@ -413,7 +413,6 @@ Contributions, suggestions, and bug reports are welcome.
 - GitHub: [@satishkumarpeddi](https://github.com/satishkumarpeddi)
 - Project: [FullStackTodoApp](https://github.com/satishkumarpeddi/FullStackTodoApp)
 
---
 
 ⭐ If you find this project useful, consider giving the repository a star!
 
