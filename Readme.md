@@ -1,4 +1,4 @@
-# 🚀 Full Stack Todo Application
+<img width="1917" height="1077" alt="image" src="https://github.com/user-attachments/assets/8ef66172-e4e5-4184-8d37-d12963151907" /># 🚀 Full Stack Todo Application
 
 A full-stack Todo application built with **HTML, CSS, JavaScript, Node.js, and Express.js**, with Docker support for running the frontend and backend as separate services.
 
@@ -328,16 +328,7 @@ console.log(result);
 
 The exact response format and status code depend on the implementation of your Express route.
 
-## 📸 Screenshots
-
-Add screenshots of your actual application to a `screenshots/` directory in the repository.
-
-Suggested files:
-
-```text
-screenshots/
-├── todo-home.png
-```
+![Todo Application](./screenshots/todo-home.png)
 
 Once those files exist and are committed, display them here:
 
