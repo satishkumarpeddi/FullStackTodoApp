@@ -1,4 +1,5 @@
-<img width="1917" height="1077" alt="image" src="https://github.com/user-attachments/assets/8ef66172-e4e5-4184-8d37-d12963151907" /># 🚀 Full Stack Todo Application
+<img width="1917" height="1077" alt="image" src="https://github.com/user-attachments/assets/8ef66172-e4e5-4184-8d37-d12963151907" />
+# 🚀 Full Stack Todo Application
 
 A full-stack Todo application built with **HTML, CSS, JavaScript, Node.js, and Express.js**, with Docker support for running the frontend and backend as separate services.
 
